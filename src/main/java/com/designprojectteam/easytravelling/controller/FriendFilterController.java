@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.designprojectteam.easytravelling.helper.Coordinates;
-import com.designprojectteam.easytravelling.helper.Features;
+//import com.designprojectteam.easytravelling.helper.Coordinates;
+//import com.designprojectteam.easytravelling.helper.Features;
 import com.designprojectteam.easytravelling.models.PassengerGeoJson;
 import com.designprojectteam.easytravelling.repository.RouteRepository;
 
@@ -70,15 +70,40 @@ public class FriendFilterController {
 //		
 //		return ResponseEntity.ok(passengerGeoJsonsList.get(0).getFeatures().get(0).getGeometry().getCoordinates().size());
 		
+		List<String> count = null;
 		
 		for(int i = 0; i<passengerGeoJsonsList.size(); i++) {
-			if(json.getFeatures().get(0).getGeometry().getCoordinates().size()>passengerGeoJsonsList.get(i).getFeatures().get(0).getGeometry().getCoordinates().size()) {
+			
+			count = new ArrayList<String>();
+			
+			if(json.getFeatures().get(0).getGeometry().getCoordinates().size()>=passengerGeoJsonsList.get(i).getFeatures().get(0).getGeometry().getCoordinates().size()) {
 				List<ArrayList<Double>> coordinates = passengerGeoJsonsList.get(i).getFeatures().get(0).getGeometry().getCoordinates();
-				for(int j= 0; j<coordinates.size(); j++  ) {
+				List<ArrayList<Double>> coordinates2 = json.getFeatures().get(0).getGeometry().getCoordinates();
+				
+				for(int j= 0; j<coordinates.size(); j++) {
+					ArrayList<Double> arrayList = coordinates.get(j);
+					
+					boolean status = false;
+					
+					for(int k = 0; k< coordinates2.size(); k++) {
+//						System.out.println(coordinates2.get(k).get(0) == arrayList.get(0));
+						if (coordinates2.get(k).get(0).equals(arrayList.get(0)) && coordinates2.get(k).get(1).equals(arrayList.get(1))) {
+//							System.out.println(coordinates2.get(k).get(0));
+							status = true;
+						}
+						
+					}
+//					System.out.println(count.size());
+					if(status == true) {
+						count.add("2");
+					}
 					
 				}
+				
+				if(count.size() == coordinates2.size())
+					System.out.println("count.size()");
+				ids.add(passengerGeoJsonsList.get(i).getId());
 			}
-			ids.add(passengerGeoJsonsList.get(i).getId());
 //			return ResponseEntity.ok(passengerGeoJsonsList.get(i).getId());
 		}
 		
