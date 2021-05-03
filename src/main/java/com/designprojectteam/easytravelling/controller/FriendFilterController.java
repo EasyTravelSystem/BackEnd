@@ -2,6 +2,7 @@ package com.designprojectteam.easytravelling.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,10 +12,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.designprojectteam.easytravelling.helper.Coordinates;
 //import com.designprojectteam.easytravelling.helper.Coordinates;
 //import com.designprojectteam.easytravelling.helper.Features;
 import com.designprojectteam.easytravelling.models.PassengerGeoJson;
+import com.designprojectteam.easytravelling.models.RouteApiRequest;
 import com.designprojectteam.easytravelling.repository.RouteRepository;
+import com.designprojectteam.easytravelling.services.GMapRouteJsonToObject;
 
 @RestController
 @RequestMapping("/api/geo")
@@ -22,6 +26,9 @@ public class FriendFilterController {
 
 	@Autowired
 	RouteRepository routeRepository;
+	
+	@Autowired
+	GMapRouteJsonToObject gMapRouteJsonToObject;
 
 	@GetMapping("/allRoutes")
 	public List<PassengerGeoJson> getAllRoutes() {
@@ -109,5 +116,28 @@ public class FriendFilterController {
 		
 		
 		return ResponseEntity.ok(ids);
+	}
+	
+	@PostMapping("/map")
+	public ResponseEntity<?> routeApi(@RequestBody RouteApiRequest json) {
+		
+//		List<Coordinates> coordinatesList = new ArrayList<Coordinates>();
+//		
+//		String words1 = json.getData().replace("[", "").replace("]", "").replace(" ", "");
+//		String[] words = words1.split(",");
+//		for(String word : words) {
+//			String[] split = word.split("/");
+//			Coordinates coordinates = new Coordinates();
+//			coordinates.setLatitude(split[0].replace("lat:", ""));
+//			coordinates.setLongitude(split[1].replace("longitude:", ""));
+//			coordinatesList.add(coordinates);
+//		}
+//		Pattern pattern = Pattern.compile(" ");
+//        words = pattern.split(json.getData());
+//		String words = json.getData().replace("\"", "");
+		
+		List<Coordinates> jsonStringToCoordinates = gMapRouteJsonToObject.jsonStringToCoordinates(json.getData());
+		
+		return ResponseEntity.ok(jsonStringToCoordinates);
 	}
 }
