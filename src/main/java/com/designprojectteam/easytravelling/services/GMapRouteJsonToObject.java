@@ -10,9 +10,11 @@ import com.designprojectteam.easytravelling.helper.Coordinates;
 @Service
 public class GMapRouteJsonToObject {
 	
-	List<Coordinates> coordinatesList = new ArrayList<Coordinates>();
+	List<Coordinates> coordinatesList;
 
 	public List<Coordinates> jsonStringToCoordinates(String json) {
+		
+		coordinatesList = new ArrayList<Coordinates>();
 		
 		String words1 = json.replace("[", "").replace("]", "").replace(" ", "");
 		String[] words = words1.split(",");

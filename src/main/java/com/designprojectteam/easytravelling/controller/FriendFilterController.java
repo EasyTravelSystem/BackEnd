@@ -17,6 +17,7 @@ import com.designprojectteam.easytravelling.helper.Coordinates;
 //import com.designprojectteam.easytravelling.helper.Features;
 import com.designprojectteam.easytravelling.models.PassengerGeoJson;
 import com.designprojectteam.easytravelling.models.RouteApiRequest;
+import com.designprojectteam.easytravelling.models.RouteDirection;
 import com.designprojectteam.easytravelling.repository.RouteRepository;
 import com.designprojectteam.easytravelling.services.GMapRouteJsonToObject;
 
@@ -31,91 +32,100 @@ public class FriendFilterController {
 	GMapRouteJsonToObject gMapRouteJsonToObject;
 
 	@GetMapping("/allRoutes")
-	public List<PassengerGeoJson> getAllRoutes() {
+	public List<RouteDirection> getAllRoutes() {
 
-		List<PassengerGeoJson> findAll = routeRepository.findAll();
+		List<RouteDirection> findAll = routeRepository.findAll();
 
 		return findAll;
 	}
 
-	@PostMapping("/saveRoute")
-	public ResponseEntity<?> saveRouteGeoLocation(@RequestBody PassengerGeoJson json) {
-		routeRepository.save(json);
-		return ResponseEntity.ok("Success");
-	}
-	
-	@PostMapping("/getSameRoute")
-	public ResponseEntity<?> getSameRoute(@RequestBody PassengerGeoJson json) {
-		List<PassengerGeoJson> passengerGeoJsonsList = routeRepository.findAll();
-		
-		List<String> ids = new ArrayList<String>();
-				
-//		for(PassengerGeoJson passengerGeoJson : passengerGeoJsonsList) {
-////			List<ArrayList<Double>> coordinates = passengerGeoJson.getFeatures().get(0).getGeometry().getCoordinates();
-////			System.out.println(coordinates);
-////			for(Features feature : passengerGeoJson.getFeatures()) {
-//////				List<ArrayList<Double>> coordinates = feature.getGeometry().getCoordinates();
-////				for(ArrayList<Double> coordinates : feature.getGeometry().getCoordinates()) {
-//////					System.out.println(coordinates.get(0));
-//////					System.out.println(coordinates.get(1));
-//////					System.out.println("qqqqqqqqqqp");
-////					if (json.getFeatures().get(0).getGeometry().getCoordinates().size() == coordinates.size()) {
-////						System.out.println("count");
-////					}
-////				}
+//	@PostMapping("/saveRoute")
+//	public ResponseEntity<?> saveRouteGeoLocation(@RequestBody PassengerGeoJson json) {
+//		routeRepository.save(json);
+//		return ResponseEntity.ok("Success");
+//	}
+//	
+//	@PostMapping("/getSameRoute")
+//	public ResponseEntity<?> getSameRoute(@RequestBody PassengerGeoJson json) {
+//		List<PassengerGeoJson> passengerGeoJsonsList = routeRepository.findAll();
+//		
+//		List<String> ids = new ArrayList<String>();
+//				
+////		for(PassengerGeoJson passengerGeoJson : passengerGeoJsonsList) {
+//////			List<ArrayList<Double>> coordinates = passengerGeoJson.getFeatures().get(0).getGeometry().getCoordinates();
+//////			System.out.println(coordinates);
+//////			for(Features feature : passengerGeoJson.getFeatures()) {
+////////				List<ArrayList<Double>> coordinates = feature.getGeometry().getCoordinates();
+//////				for(ArrayList<Double> coordinates : feature.getGeometry().getCoordinates()) {
+////////					System.out.println(coordinates.get(0));
+////////					System.out.println(coordinates.get(1));
+////////					System.out.println("qqqqqqqqqqp");
+//////					if (json.getFeatures().get(0).getGeometry().getCoordinates().size() == coordinates.size()) {
+//////						System.out.println("count");
+//////					}
+//////				}
+//////			}
+////			
+////			if (json.getFeatures().get(0).getGeometry().getCoordinates().size() >= passengerGeoJson.getFeatures().get(0).getGeometry().getCoordinates().size()) {
+////				System.out.println(json.getFeatures().get(0).getGeometry().getCoordinates().size());
 ////			}
+////			
+////		}
+//		
+////		for (int i = 0; i < passengerGeoJsonsList.size(); i++) {
+////			System.out.println(passengerGeoJsonsList.get(i).getFeatures().get(0).getGeometry().getCoordinates().size());
+////		}
+////		
+////		return ResponseEntity.ok(passengerGeoJsonsList.get(0).getFeatures().get(0).getGeometry().getCoordinates().size());
+//		
+//		List<String> count = null;
+//		
+//		for(int i = 0; i<passengerGeoJsonsList.size(); i++) {
 //			
-//			if (json.getFeatures().get(0).getGeometry().getCoordinates().size() >= passengerGeoJson.getFeatures().get(0).getGeometry().getCoordinates().size()) {
-//				System.out.println(json.getFeatures().get(0).getGeometry().getCoordinates().size());
+//			count = new ArrayList<String>();
+//			
+//			if(json.getFeatures().get(0).getGeometry().getCoordinates().size()>=passengerGeoJsonsList.get(i).getFeatures().get(0).getGeometry().getCoordinates().size()) {
+//				List<ArrayList<Double>> coordinates = passengerGeoJsonsList.get(i).getFeatures().get(0).getGeometry().getCoordinates();
+//				List<ArrayList<Double>> coordinates2 = json.getFeatures().get(0).getGeometry().getCoordinates();
+//				
+//				for(int j= 0; j<coordinates.size(); j++) {
+//					ArrayList<Double> arrayList = coordinates.get(j);
+//					
+//					boolean status = false;
+//					
+//					for(int k = 0; k< coordinates2.size(); k++) {
+////						System.out.println(coordinates2.get(k).get(0) == arrayList.get(0));
+//						if (coordinates2.get(k).get(0).equals(arrayList.get(0)) && coordinates2.get(k).get(1).equals(arrayList.get(1))) {
+////							System.out.println(coordinates2.get(k).get(0));
+//							status = true;
+//						}
+//						
+//					}
+////					System.out.println(count.size());
+//					if(status == true) {
+//						count.add("2");
+//					}
+//					
+//				}
+//				
+//				if(count.size() == coordinates2.size())
+//					System.out.println("count.size()");
+//				ids.add(passengerGeoJsonsList.get(i).getId());
 //			}
-//			
-//		}
-		
-//		for (int i = 0; i < passengerGeoJsonsList.size(); i++) {
-//			System.out.println(passengerGeoJsonsList.get(i).getFeatures().get(0).getGeometry().getCoordinates().size());
+////			return ResponseEntity.ok(passengerGeoJsonsList.get(i).getId());
 //		}
 //		
-//		return ResponseEntity.ok(passengerGeoJsonsList.get(0).getFeatures().get(0).getGeometry().getCoordinates().size());
-		
-		List<String> count = null;
-		
-		for(int i = 0; i<passengerGeoJsonsList.size(); i++) {
-			
-			count = new ArrayList<String>();
-			
-			if(json.getFeatures().get(0).getGeometry().getCoordinates().size()>=passengerGeoJsonsList.get(i).getFeatures().get(0).getGeometry().getCoordinates().size()) {
-				List<ArrayList<Double>> coordinates = passengerGeoJsonsList.get(i).getFeatures().get(0).getGeometry().getCoordinates();
-				List<ArrayList<Double>> coordinates2 = json.getFeatures().get(0).getGeometry().getCoordinates();
-				
-				for(int j= 0; j<coordinates.size(); j++) {
-					ArrayList<Double> arrayList = coordinates.get(j);
-					
-					boolean status = false;
-					
-					for(int k = 0; k< coordinates2.size(); k++) {
-//						System.out.println(coordinates2.get(k).get(0) == arrayList.get(0));
-						if (coordinates2.get(k).get(0).equals(arrayList.get(0)) && coordinates2.get(k).get(1).equals(arrayList.get(1))) {
-//							System.out.println(coordinates2.get(k).get(0));
-							status = true;
-						}
-						
-					}
-//					System.out.println(count.size());
-					if(status == true) {
-						count.add("2");
-					}
-					
-				}
-				
-				if(count.size() == coordinates2.size())
-					System.out.println("count.size()");
-				ids.add(passengerGeoJsonsList.get(i).getId());
-			}
-//			return ResponseEntity.ok(passengerGeoJsonsList.get(i).getId());
-		}
-		
-		
-		return ResponseEntity.ok(ids);
+//		
+//		return ResponseEntity.ok(ids);
+//	}
+	
+	@PostMapping("/saveDirection")
+	public ResponseEntity<?> saveMapDirection(@RequestBody RouteApiRequest json) {
+		List<Coordinates> jsonStringToCoordinates = gMapRouteJsonToObject.jsonStringToCoordinates(json.getData());
+		RouteDirection routeDirection = new RouteDirection();
+		routeDirection.setRouteApiRequests(jsonStringToCoordinates);
+		routeRepository.save(routeDirection);
+		return ResponseEntity.ok(routeDirection);
 	}
 	
 	@PostMapping("/map")
@@ -139,5 +149,33 @@ public class FriendFilterController {
 		List<Coordinates> jsonStringToCoordinates = gMapRouteJsonToObject.jsonStringToCoordinates(json.getData());
 		
 		return ResponseEntity.ok(jsonStringToCoordinates);
+	}
+	
+	@PostMapping("/getSameRoute")
+	public ResponseEntity<?> findSaveRoute(@RequestBody RouteApiRequest json) {
+		
+		int count = 0;
+		int count2 = 0;
+		
+		List<Coordinates> jsonStringToCoordinates = gMapRouteJsonToObject.jsonStringToCoordinates(json.getData());
+		List<RouteDirection> allRouteDirection = routeRepository.findAll();
+		
+		for(RouteDirection routeDirection : allRouteDirection) {
+			if(jsonStringToCoordinates.size() <= routeDirection.getRouteApiRequests().size()) {
+				for(Coordinates coordinates:jsonStringToCoordinates) {
+					for(Coordinates coordinates2: routeDirection.getRouteApiRequests()) {
+						if(coordinates.getLatitude().equals(coordinates2.getLatitude()) && coordinates.getLongitude().equals(coordinates.getLongitude())) {
+//							System.out.println("zoooooooooooooo");
+							count++;
+						}
+					}
+//					count++;
+				}
+				count2++;
+//				count++;
+			}
+		}
+		
+		return ResponseEntity.ok(count2);
 	}
 }

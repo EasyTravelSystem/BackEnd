@@ -2,8 +2,8 @@ package com.designprojectteam.easytravelling.repository;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import com.designprojectteam.easytravelling.models.PassengerGeoJson;
+import com.designprojectteam.easytravelling.models.RouteDirection;
 
-public interface RouteRepository extends MongoRepository<PassengerGeoJson, String> {
+public interface RouteRepository extends MongoRepository<RouteDirection, String> {
 
 }

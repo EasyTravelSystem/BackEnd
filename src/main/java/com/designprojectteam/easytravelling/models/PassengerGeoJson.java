@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.designprojectteam.easytravelling.helper.Features;
 
-@Document(collection = "routes")
+//@Document(collection = "routes")
 public class PassengerGeoJson {
 	
 	@Id
