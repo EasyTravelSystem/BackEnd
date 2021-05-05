@@ -1,4 +1,4 @@
-package com.designprojectteam.easytravelling.models;
+package com.designprojectteam.easytravelling.payload.request;
 
 public class RouteApiRequest {
 	

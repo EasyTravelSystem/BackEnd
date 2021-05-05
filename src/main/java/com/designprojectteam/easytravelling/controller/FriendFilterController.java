@@ -17,9 +17,9 @@ import com.designprojectteam.easytravelling.helper.Coordinates;
 //import com.designprojectteam.easytravelling.helper.Coordinates;
 //import com.designprojectteam.easytravelling.helper.Features;
 import com.designprojectteam.easytravelling.models.PassengerGeoJson;
-import com.designprojectteam.easytravelling.models.RouteApiRequest;
 import com.designprojectteam.easytravelling.models.RouteDirection;
 import com.designprojectteam.easytravelling.models.User;
+import com.designprojectteam.easytravelling.payload.request.RouteApiRequest;
 import com.designprojectteam.easytravelling.repository.RouteRepository;
 import com.designprojectteam.easytravelling.repository.UserRepository;
 import com.designprojectteam.easytravelling.services.GMapRouteJsonToObject;
@@ -91,9 +91,9 @@ public class FriendFilterController {
 		for(RouteDirection routeDirection : allRouteDirection) {
 			int count = 0;
 			if(jsonStringToCoordinates.size() <= routeDirection.getRouteApiRequests().size()) {
-				for(Coordinates coordinates:jsonStringToCoordinates) {
-					for(Coordinates coordinates2: routeDirection.getRouteApiRequests()) {
-						if(coordinates.getLatitude().equals(coordinates2.getLatitude()) && coordinates.getLongitude().equals(coordinates2.getLongitude())) {
+				for(Coordinates coordinatesFromRequest:jsonStringToCoordinates) {
+					for(Coordinates coordinatesFromApi: routeDirection.getRouteApiRequests()) {
+						if(coordinatesFromRequest.getLatitude().equals(coordinatesFromApi.getLatitude()) && coordinatesFromRequest.getLongitude().equals(coordinatesFromApi.getLongitude())) {
 //							System.out.println("zoooooooooooooo");
 							count++;
 						}
