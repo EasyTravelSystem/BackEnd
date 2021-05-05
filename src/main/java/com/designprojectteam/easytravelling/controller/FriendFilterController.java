@@ -2,6 +2,7 @@ package com.designprojectteam.easytravelling.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,9 @@ import com.designprojectteam.easytravelling.helper.Coordinates;
 import com.designprojectteam.easytravelling.models.PassengerGeoJson;
 import com.designprojectteam.easytravelling.models.RouteApiRequest;
 import com.designprojectteam.easytravelling.models.RouteDirection;
+import com.designprojectteam.easytravelling.models.User;
 import com.designprojectteam.easytravelling.repository.RouteRepository;
+import com.designprojectteam.easytravelling.repository.UserRepository;
 import com.designprojectteam.easytravelling.services.GMapRouteJsonToObject;
 
 @RestController
@@ -29,16 +32,108 @@ public class FriendFilterController {
 	RouteRepository routeRepository;
 	
 	@Autowired
+	UserRepository userRepository;
+	
+	@Autowired
 	GMapRouteJsonToObject gMapRouteJsonToObject;
 
 	@GetMapping("/allRoutes")
-	public List<RouteDirection> getAllRoutes() {
+	public ResponseEntity<?> getAllRoutes() {
 
 		List<RouteDirection> findAll = routeRepository.findAll();
+		Optional<User> findById = userRepository.findById("605e27d5674f487e21eab147");
 
-		return findAll;
+		return ResponseEntity.ok(findById.get());
 	}
-
+	
+	@PostMapping("/saveDirection")
+	public ResponseEntity<?> saveMapDirection(@RequestBody RouteApiRequest json) {
+		List<Coordinates> jsonStringToCoordinates = gMapRouteJsonToObject.jsonStringToCoordinates(json.getData());
+		RouteDirection routeDirection = new RouteDirection();
+		routeDirection.setRouteApiRequests(jsonStringToCoordinates);
+		routeDirection.setUserId(json.getUserId());
+		routeRepository.save(routeDirection);
+		return ResponseEntity.ok(routeDirection);
+	}
+	
+	@PostMapping("/map")
+	public ResponseEntity<?> routeApi(@RequestBody RouteApiRequest json) {
+		
+//		List<Coordinates> coordinatesList = new ArrayList<Coordinates>();
+//		
+//		String words1 = json.getData().replace("[", "").replace("]", "").replace(" ", "");
+//		String[] words = words1.split(",");
+//		for(String word : words) {
+//			String[] split = word.split("/");
+//			Coordinates coordinates = new Coordinates();
+//			coordinates.setLatitude(split[0].replace("lat:", ""));
+//			coordinates.setLongitude(split[1].replace("longitude:", ""));
+//			coordinatesList.add(coordinates);
+//		}
+//		Pattern pattern = Pattern.compile(" ");
+//        words = pattern.split(json.getData());
+//		String words = json.getData().replace("\"", "");
+		
+		List<Coordinates> jsonStringToCoordinates = gMapRouteJsonToObject.jsonStringToCoordinates(json.getData());
+		
+		return ResponseEntity.ok(jsonStringToCoordinates);
+	}
+	
+	@PostMapping("/getSameRoute")
+	public ResponseEntity<?> findSaveRoute(@RequestBody RouteApiRequest json) {
+		
+		List<String> userIdList = new ArrayList<String>();
+		List<User> userList = new ArrayList<User>();
+		
+		List<Coordinates> jsonStringToCoordinates = gMapRouteJsonToObject.jsonStringToCoordinates(json.getData());
+		List<RouteDirection> allRouteDirection = routeRepository.findAll();
+		
+		for(RouteDirection routeDirection : allRouteDirection) {
+			int count = 0;
+			if(jsonStringToCoordinates.size() <= routeDirection.getRouteApiRequests().size()) {
+				for(Coordinates coordinates:jsonStringToCoordinates) {
+					for(Coordinates coordinates2: routeDirection.getRouteApiRequests()) {
+						if(coordinates.getLatitude().equals(coordinates2.getLatitude()) && coordinates.getLongitude().equals(coordinates2.getLongitude())) {
+//							System.out.println("zoooooooooooooo");
+							count++;
+						}
+					}
+				}
+				if (count == jsonStringToCoordinates.size()) {
+					userIdList.add(routeDirection.getUserId());
+				}
+			}
+		}
+		
+		for(String userId:userIdList) {
+			User user = userRepository.findById(userId).get();
+			userList.add(user);
+		}
+		
+		return ResponseEntity.ok(userList);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 //	@PostMapping("/saveRoute")
 //	public ResponseEntity<?> saveRouteGeoLocation(@RequestBody PassengerGeoJson json) {
 //		routeRepository.save(json);
@@ -118,64 +213,4 @@ public class FriendFilterController {
 //		
 //		return ResponseEntity.ok(ids);
 //	}
-	
-	@PostMapping("/saveDirection")
-	public ResponseEntity<?> saveMapDirection(@RequestBody RouteApiRequest json) {
-		List<Coordinates> jsonStringToCoordinates = gMapRouteJsonToObject.jsonStringToCoordinates(json.getData());
-		RouteDirection routeDirection = new RouteDirection();
-		routeDirection.setRouteApiRequests(jsonStringToCoordinates);
-		routeRepository.save(routeDirection);
-		return ResponseEntity.ok(routeDirection);
-	}
-	
-	@PostMapping("/map")
-	public ResponseEntity<?> routeApi(@RequestBody RouteApiRequest json) {
-		
-//		List<Coordinates> coordinatesList = new ArrayList<Coordinates>();
-//		
-//		String words1 = json.getData().replace("[", "").replace("]", "").replace(" ", "");
-//		String[] words = words1.split(",");
-//		for(String word : words) {
-//			String[] split = word.split("/");
-//			Coordinates coordinates = new Coordinates();
-//			coordinates.setLatitude(split[0].replace("lat:", ""));
-//			coordinates.setLongitude(split[1].replace("longitude:", ""));
-//			coordinatesList.add(coordinates);
-//		}
-//		Pattern pattern = Pattern.compile(" ");
-//        words = pattern.split(json.getData());
-//		String words = json.getData().replace("\"", "");
-		
-		List<Coordinates> jsonStringToCoordinates = gMapRouteJsonToObject.jsonStringToCoordinates(json.getData());
-		
-		return ResponseEntity.ok(jsonStringToCoordinates);
-	}
-	
-	@PostMapping("/getSameRoute")
-	public ResponseEntity<?> findSaveRoute(@RequestBody RouteApiRequest json) {
-		
-		int count = 0;
-		int count2 = 0;
-		
-		List<Coordinates> jsonStringToCoordinates = gMapRouteJsonToObject.jsonStringToCoordinates(json.getData());
-		List<RouteDirection> allRouteDirection = routeRepository.findAll();
-		
-		for(RouteDirection routeDirection : allRouteDirection) {
-			if(jsonStringToCoordinates.size() <= routeDirection.getRouteApiRequests().size()) {
-				for(Coordinates coordinates:jsonStringToCoordinates) {
-					for(Coordinates coordinates2: routeDirection.getRouteApiRequests()) {
-						if(coordinates.getLatitude().equals(coordinates2.getLatitude()) && coordinates.getLongitude().equals(coordinates.getLongitude())) {
-//							System.out.println("zoooooooooooooo");
-							count++;
-						}
-					}
-//					count++;
-				}
-				count2++;
-//				count++;
-			}
-		}
-		
-		return ResponseEntity.ok(count2);
-	}
 }
