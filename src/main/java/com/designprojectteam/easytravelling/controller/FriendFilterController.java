@@ -3,7 +3,6 @@ package com.designprojectteam.easytravelling.controller;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,9 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.designprojectteam.easytravelling.helper.Coordinates;
-//import com.designprojectteam.easytravelling.helper.Coordinates;
-//import com.designprojectteam.easytravelling.helper.Features;
-import com.designprojectteam.easytravelling.models.PassengerGeoJson;
 import com.designprojectteam.easytravelling.models.RouteDirection;
 import com.designprojectteam.easytravelling.models.User;
 import com.designprojectteam.easytravelling.payload.request.RouteApiRequest;
@@ -40,7 +36,7 @@ public class FriendFilterController {
 	@GetMapping("/allRoutes")
 	public ResponseEntity<?> getAllRoutes() {
 
-		List<RouteDirection> findAll = routeRepository.findAll();
+//		List<RouteDirection> findAll = routeRepository.findAll();
 		Optional<User> findById = userRepository.findById("605e27d5674f487e21eab147");
 
 		return ResponseEntity.ok(findById.get());
@@ -94,13 +90,20 @@ public class FriendFilterController {
 				for(Coordinates coordinatesFromRequest:jsonStringToCoordinates) {
 					for(Coordinates coordinatesFromApi: routeDirection.getRouteApiRequests()) {
 						if(coordinatesFromRequest.getLatitude().equals(coordinatesFromApi.getLatitude()) && coordinatesFromRequest.getLongitude().equals(coordinatesFromApi.getLongitude())) {
-//							System.out.println("zoooooooooooooo");
 							count++;
 						}
 					}
 				}
 				if (count == jsonStringToCoordinates.size()) {
 					userIdList.add(routeDirection.getUserId());
+				}
+			} else {
+				for(Coordinates coordinatesFromApi: routeDirection.getRouteApiRequests()) {
+					for(Coordinates coordinatesFromRequest:jsonStringToCoordinates) {
+						if(coordinatesFromApi.getLatitude().equals(coordinatesFromRequest.getLatitude()) && coordinatesFromApi.getLongitude().equals(coordinatesFromRequest.getLongitude())) {
+							count++;
+						}
+					}
 				}
 			}
 		}
