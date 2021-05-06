@@ -6,4 +6,6 @@ import com.designprojectteam.easytravelling.models.RouteDirection;
 
 public interface RouteRepository extends MongoRepository<RouteDirection, String> {
 
+	void deleteByUserId(String userId);
+
 }

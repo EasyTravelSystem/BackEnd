@@ -10,12 +10,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.designprojectteam.easytravelling.helper.Coordinates;
 import com.designprojectteam.easytravelling.models.RouteDirection;
 import com.designprojectteam.easytravelling.models.User;
 import com.designprojectteam.easytravelling.payload.request.RouteApiRequest;
+import com.designprojectteam.easytravelling.payload.response.MessageResponse;
 import com.designprojectteam.easytravelling.repository.RouteRepository;
 import com.designprojectteam.easytravelling.repository.UserRepository;
 import com.designprojectteam.easytravelling.services.GMapRouteJsonToObject;
@@ -116,6 +118,11 @@ public class FriendFilterController {
 		return ResponseEntity.ok(userList);
 	}
 	
+	@PostMapping("/removeRoute")
+	public ResponseEntity<?> removeRouteFromDb(@RequestParam("userId") String userId) {
+		routeRepository.deleteByUserId(userId);
+		return ResponseEntity.ok(new MessageResponse("success"));
+	}
 	
 	
 	
