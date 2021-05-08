@@ -86,6 +86,13 @@ public class FriendFilterController {
 		List<User> userList = new ArrayList<User>();
 		
 		List<Coordinates> jsonStringToCoordinates = gMapRouteJsonToObject.jsonStringToCoordinates(json.getData());
+		
+//		 Save current route in db
+		RouteDirection currentUserRouteDirection = new RouteDirection();
+		currentUserRouteDirection.setRouteApiRequests(jsonStringToCoordinates);
+		currentUserRouteDirection.setUserId(json.getUserId());
+		routeRepository.save(currentUserRouteDirection);
+		
 		List<RouteDirection> allRouteDirection = routeRepository.findAll();
 		
 		for(RouteDirection routeDirection : allRouteDirection) {
@@ -109,12 +116,16 @@ public class FriendFilterController {
 						}
 					}
 				}
+				if (count == routeDirection.getRouteApiRequests().size()) {
+					userIdList.add(routeDirection.getUserId());
+				}
 			}
 		}
 		
 		for(String userId:userIdList) {
 			User user = userRepository.findById(userId).get();
-			userList.add(user);
+			if(!user.getId().equals(json.getUserId()))
+				userList.add(user);
 		}
 		
 		return ResponseEntity.ok(userList);
