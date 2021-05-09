@@ -23,6 +23,7 @@ import com.designprojectteam.easytravelling.payload.response.MessageResponse;
 import com.designprojectteam.easytravelling.repository.RouteRepository;
 import com.designprojectteam.easytravelling.repository.UserRepository;
 import com.designprojectteam.easytravelling.services.GMapRouteJsonToObject;
+import com.designprojectteam.easytravelling.services.UserRouteRecord;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -37,6 +38,9 @@ public class FriendFilterController {
 	
 	@Autowired
 	GMapRouteJsonToObject gMapRouteJsonToObject;
+	
+	@Autowired
+	UserRouteRecord userRouteRecord;
 
 	@GetMapping("/allRoutes")
 	public ResponseEntity<?> getAllRoutes() {
@@ -94,6 +98,8 @@ public class FriendFilterController {
 		currentUserRouteDirection.setRouteApiRequests(jsonStringToCoordinates);
 		currentUserRouteDirection.setUserId(json.getUserId());
 		routeRepository.save(currentUserRouteDirection);
+		
+		userRouteRecord.recordUserWithRouteDate(json.getUserId());
 		
 		List<RouteDirection> allRouteDirection = routeRepository.findAll();
 		
