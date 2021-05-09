@@ -18,6 +18,7 @@ import com.designprojectteam.easytravelling.helper.Coordinates;
 import com.designprojectteam.easytravelling.models.RouteDirection;
 import com.designprojectteam.easytravelling.models.User;
 import com.designprojectteam.easytravelling.payload.request.RouteApiRequest;
+import com.designprojectteam.easytravelling.payload.response.FilterFriendResponse;
 import com.designprojectteam.easytravelling.payload.response.MessageResponse;
 import com.designprojectteam.easytravelling.repository.RouteRepository;
 import com.designprojectteam.easytravelling.repository.UserRepository;
@@ -84,6 +85,7 @@ public class FriendFilterController {
 		
 		List<String> userIdList = new ArrayList<String>();
 		List<User> userList = new ArrayList<User>();
+		FilterFriendResponse filterFriendResponse = new FilterFriendResponse();
 		
 		List<Coordinates> jsonStringToCoordinates = gMapRouteJsonToObject.jsonStringToCoordinates(json.getData());
 		
@@ -128,7 +130,10 @@ public class FriendFilterController {
 				userList.add(user);
 		}
 		
-		return ResponseEntity.ok(userList);
+		filterFriendResponse.setRoute(json.getFrom()+ " to "+json.getTo());
+		filterFriendResponse.setUserList(userList);
+		
+		return ResponseEntity.ok(filterFriendResponse);
 	}
 	
 	@PostMapping("/removeRoute")
