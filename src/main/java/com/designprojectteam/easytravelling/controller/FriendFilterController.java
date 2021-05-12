@@ -1,5 +1,7 @@
 package com.designprojectteam.easytravelling.controller;
 
+import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +25,7 @@ import com.designprojectteam.easytravelling.payload.response.FilterFriendRespons
 import com.designprojectteam.easytravelling.payload.response.MessageResponse;
 import com.designprojectteam.easytravelling.repository.RouteRepository;
 import com.designprojectteam.easytravelling.repository.UserRepository;
+import com.designprojectteam.easytravelling.repository.UserRouteRecorderRepository;
 import com.designprojectteam.easytravelling.services.GMapRouteJsonToObject;
 import com.designprojectteam.easytravelling.services.UserRouteRecord;
 
@@ -42,6 +45,9 @@ public class FriendFilterController {
 	
 	@Autowired
 	UserRouteRecord userRouteRecord;
+	
+	@Autowired
+	UserRouteRecorderRepository userRouteRecorderRepository;
 
 	@GetMapping("/allRoutes")
 	public ResponseEntity<?> getAllRoutes() {
@@ -152,5 +158,46 @@ public class FriendFilterController {
 	public ResponseEntity<?> removeRouteFromDb(@RequestParam("userId") String userId) {
 		routeRepository.deleteByUserId(userId);
 		return ResponseEntity.ok(new MessageResponse("success"));
+	}
+	
+	@GetMapping("/monthlyUserCount")
+	public ResponseEntity<?> getUsersAccordingToMonth() {
+		
+		List<Integer> userCount = new ArrayList<Integer>();
+		
+//		LocalDate start = LocalDate.ofEpochDay(System.currentTimeMillis() / (24 * 60 * 60 * 1000) ).withDayOfMonth(1);
+//
+//		LocalDate end = LocalDate.ofEpochDay(System.currentTimeMillis() / (24 * 60 * 60 * 1000) ).plusMonths(1).withDayOfMonth(1).minusDays(1);
+//		List<Object> findByCreatedateGreaterThanAndCreatedateLessThan = userRouteRecorderRepository.findByCreatedDateBetween(start, end);
+		
+		
+		
+		LocalDate date = LocalDate.now();
+//        int month = date.getMonthValue();
+
+//        for (int currentMonth = month; currentMonth <= 12; currentMonth++) {
+//            date = date.withMonth(currentMonth);
+//
+//            //start of month :
+//            LocalDate firstDay = date.withDayOfMonth(1);
+//
+//            //end of month
+//            LocalDate lastDay = date.with(TemporalAdjusters.lastDayOfMonth());
+//            
+//            List<Object> findByCreatedateGreaterThanAndCreatedateLessThan = userRouteRecorderRepository.findByCreatedDateBetween(firstDay, lastDay);
+//            userId.add(findByCreatedateGreaterThanAndCreatedateLessThan.toString());
+//        }
+        
+        for (int currentMonth = 0; currentMonth < 12; currentMonth++) {
+        	LocalDate minusMonths = date.minusMonths(currentMonth);
+        	LocalDate start = minusMonths.withDayOfMonth(1);
+        	LocalDate end = minusMonths.with(TemporalAdjusters.lastDayOfMonth());
+        	List<Object> findByCreatedateGreaterThanAndCreatedateLessThan = userRouteRecorderRepository.findByCreatedDateBetween(start, end);
+        	userCount.add(findByCreatedateGreaterThanAndCreatedateLessThan.size());
+        }
+		
+		
+		
+		return ResponseEntity.ok(userCount);
 	}
 }
