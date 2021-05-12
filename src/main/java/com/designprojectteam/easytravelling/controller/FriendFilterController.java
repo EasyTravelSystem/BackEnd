@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.designprojectteam.easytravelling.helper.Coordinates;
+import com.designprojectteam.easytravelling.helper.FilterUsers;
 import com.designprojectteam.easytravelling.models.RouteDirection;
 import com.designprojectteam.easytravelling.models.User;
 import com.designprojectteam.easytravelling.payload.request.RouteApiRequest;
@@ -87,8 +88,8 @@ public class FriendFilterController {
 	@PostMapping("/getSameRoute")
 	public ResponseEntity<?> findSaveRoute(@RequestBody RouteApiRequest json) {
 		
-		List<String> userIdList = new ArrayList<String>();
-		List<User> userList = new ArrayList<User>();
+		List<String> routeIdList = new ArrayList<String>();
+		List<FilterUsers> userList = new ArrayList<>();
 		FilterFriendResponse filterFriendResponse = new FilterFriendResponse();
 		
 		List<Coordinates> jsonStringToCoordinates = gMapRouteJsonToObject.jsonStringToCoordinates(json.getData());
@@ -97,6 +98,7 @@ public class FriendFilterController {
 		RouteDirection currentUserRouteDirection = new RouteDirection();
 		currentUserRouteDirection.setRouteApiRequests(jsonStringToCoordinates);
 		currentUserRouteDirection.setUserId(json.getUserId());
+		currentUserRouteDirection.setRouteFromTo(json.getFrom()+ " to "+json.getTo());
 		routeRepository.save(currentUserRouteDirection);
 		
 		userRouteRecord.recordUserWithRouteDate(json.getUserId());
@@ -114,7 +116,7 @@ public class FriendFilterController {
 					}
 				}
 				if (count == jsonStringToCoordinates.size()) {
-					userIdList.add(routeDirection.getUserId());
+					routeIdList.add(routeDirection.getId());
 				}
 			} else {
 				for(Coordinates coordinatesFromApi: routeDirection.getRouteApiRequests()) {
@@ -125,18 +127,22 @@ public class FriendFilterController {
 					}
 				}
 				if (count == routeDirection.getRouteApiRequests().size()) {
-					userIdList.add(routeDirection.getUserId());
+					routeIdList.add(routeDirection.getId());
 				}
 			}
 		}
 		
-		for(String userId:userIdList) {
-			User user = userRepository.findById(userId).get();
-			if(!user.getId().equals(json.getUserId()))
-				userList.add(user);
+		for(String routeId:routeIdList) {
+			RouteDirection routeDirection = routeRepository.findById(routeId).get();
+			User user = userRepository.findById(routeDirection.getUserId()).get();
+			if(!user.getId().equals(json.getUserId())) {
+				FilterUsers filterUser = new FilterUsers();
+				filterUser.setUser(user);
+				filterUser.setRouteFromTo(routeDirection.getRouteFromTo());
+				userList.add(filterUser);
+			}
 		}
 		
-		filterFriendResponse.setRoute(json.getFrom()+ " to "+json.getTo());
 		filterFriendResponse.setUserList(userList);
 		
 		return ResponseEntity.ok(filterFriendResponse);

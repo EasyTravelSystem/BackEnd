@@ -15,6 +15,8 @@ public class RouteDirection {
 	
 	private String userId;
 	
+	private String routeFromTo;
+
 	private List<Coordinates> routeApiRequests;
 	
 	public String getId() {
@@ -31,6 +33,14 @@ public class RouteDirection {
 
 	public void setUserId(String userId) {
 		this.userId = userId;
+	}
+	
+	public String getRouteFromTo() {
+		return routeFromTo;
+	}
+
+	public void setRouteFromTo(String routeFromTo) {
+		this.routeFromTo = routeFromTo;
 	}
 
 	public List<Coordinates> getRouteApiRequests() {

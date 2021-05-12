@@ -2,24 +2,16 @@ package com.designprojectteam.easytravelling.payload.response;
 
 import java.util.List;
 
-import com.designprojectteam.easytravelling.models.User;
+import com.designprojectteam.easytravelling.helper.FilterUsers;
 
 public class FilterFriendResponse {
-
-	private String route;
 	
-	private List<User> userList;
+	private List<FilterUsers> userList;
 	
-	public String getRoute() {
-		return route;
-	}
-	public void setRoute(String route) {
-		this.route = route;
-	}
-	public List<User> getUserList() {
+	public List<FilterUsers> getUserList() {
 		return userList;
 	}
-	public void setUserList(List<User> userList) {
+	public void setUserList(List<FilterUsers> userList) {
 		this.userList = userList;
 	}
 }
