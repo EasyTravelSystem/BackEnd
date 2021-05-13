@@ -18,11 +18,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.designprojectteam.easytravelling.helper.Coordinates;
 import com.designprojectteam.easytravelling.helper.FilterUsers;
+import com.designprojectteam.easytravelling.models.Profile;
 import com.designprojectteam.easytravelling.models.RouteDirection;
 import com.designprojectteam.easytravelling.models.User;
 import com.designprojectteam.easytravelling.payload.request.RouteApiRequest;
 import com.designprojectteam.easytravelling.payload.response.FilterFriendResponse;
 import com.designprojectteam.easytravelling.payload.response.MessageResponse;
+import com.designprojectteam.easytravelling.repository.ProfileRepository;
 import com.designprojectteam.easytravelling.repository.RouteRepository;
 import com.designprojectteam.easytravelling.repository.UserRepository;
 import com.designprojectteam.easytravelling.repository.UserRouteRecorderRepository;
@@ -48,6 +50,9 @@ public class FriendFilterController {
 	
 	@Autowired
 	UserRouteRecorderRepository userRouteRecorderRepository;
+	
+	@Autowired
+	ProfileRepository profileRepository;
 
 	@GetMapping("/allRoutes")
 	public ResponseEntity<?> getAllRoutes() {
@@ -199,5 +204,11 @@ public class FriendFilterController {
 		
 		
 		return ResponseEntity.ok(userCount);
+	}
+	
+	@PostMapping("/updateProfile")
+	public ResponseEntity<?> createProfile(@RequestBody Profile profile) {
+		profileRepository.save(profile);
+		return ResponseEntity.ok(new MessageResponse("success"));
 	}
 }
